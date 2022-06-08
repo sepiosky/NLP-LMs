@@ -9,14 +9,16 @@ class MasnaviDataset(D.Dataset):
         self.corpus_index = {}
         for idx, w in enumerate(corpus):
             self.corpus_index[w]=idx 
-        self.pad_len = max([len(m) for m in list(itertools.chain(*masnavi_beyts))])+2 # +2 is for bom and eom
+        self.pad_len = 60
     def __len__(self):
             return len(self.masnavi_beyts)
     def __getitem__(self, idx):
-            mesra = ["__BOM__"]+self.masnavi_beyts[idx][0]+["__EOM__"]
+            mesra = list(itertools.chain(*[[c for c in w]+["__SPACE__"] for w in self.masnavi_beyts[idx][0]]))[0:-1]
+            mesra = ["__BOM__"]+mesra+["__EOM__"]
             mesra_padded = ["__PAD__"]*(self.pad_len-len(mesra)) + mesra
             
-            target = ["__BOM__"]+self.masnavi_beyts[idx][1]+["__EOM__"]
+            target = list(itertools.chain(*[[c for c in w]+["__SPACE__"] for w in self.masnavi_beyts[idx][1]]))[0:-1]
+            target = ["__BOM__"]+target+["__EOM__"]
             target_padded = target + ["__PAD__"]*(self.pad_len-len(target))
             target_indices = torch.LongTensor([self.corpus_index[w] for w in target_padded])
             

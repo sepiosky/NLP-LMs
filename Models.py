@@ -33,11 +33,11 @@ class LSTM(nn.Module):
         # The LSTM takes word embeddings as inputs, and outputs hidden states
         # with dimensionality hidden_dim.
         self.lstm = nn.LSTM(input_size=self.embedding_dim,
-                            hidden_size=self.hidden_dims,
-                            batch_first=True,
-                            num_layers=self.num_layers,
-                            bidirectional=bidirectional,
-                            dropout = self.dropout)
+                                hidden_size=hidden_dims,
+                                batch_first=True,
+                                num_layers=num_layers,
+                                bidirectional=bidirectional,
+                                dropout = dropout)
 
         self.initialize_parameters()
 
@@ -81,8 +81,9 @@ class LSTM(nn.Module):
         embeds = embeds.to(self.device) #.view(-1, batch_size, self.embedding_dim) #remove .view(...) if lstm batch_first is true
 
         output, (hidden,cell) = self.lstm(embeds, (hidden,cell))
-
+        
         return output, hidden, cell
+                
 
 
 class SiameseLSTM(nn.Module):
